@@ -7,7 +7,7 @@ import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:remixicon/remixicon.dart';
 
-import '../features/home/home_screen.dart';
+import '../features/home/doc_scanner_screen.dart';
 import '../utils/enums.dart';
 
 class MainScreen extends StatefulWidget {
@@ -23,11 +23,11 @@ class _MainScreenState extends State<MainScreen> {
   final _advancedDrawerController = AdvancedDrawerController();
 
   List<Widget> screens = [
-    const HomeScreen(),
-    const HomeScreen(),
-    const HomeScreen(),
-    const HomeScreen(),
-    const HomeScreen(),
+    const DocScannerScreen(),
+    const DocScannerScreen(),
+    const DocScannerScreen(),
+    const DocScannerScreen(),
+    const DocScannerScreen(),
   ];
 
   void _handleIndexChanged(int i) {

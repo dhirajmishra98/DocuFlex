@@ -1,4 +1,4 @@
-import 'package:docuflex/features/home/home_screen.dart';
+import 'package:docuflex/features/home/doc_scanner_screen.dart';
 import 'package:docuflex/onboarding/main_screen.dart';
 import 'package:docuflex/onboarding/onboarding_screen.dart';
 import 'package:docuflex/onboarding/splash_screen.dart';
@@ -21,9 +21,9 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         builder: (context) => const MainScreen(),
       );
 
-    case HomeScreen.routeName:
+    case DocScannerScreen.routeName:
       return MaterialPageRoute(
-        builder: (context) => const HomeScreen(),
+        builder: (context) => const DocScannerScreen(),
       );
 
     default:

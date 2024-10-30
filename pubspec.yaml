@@ -44,6 +44,10 @@ dependencies:
   shared_preferences: ^2.3.2
   in_app_update: ^4.2.3
   flutter_dotenv: ^5.2.1
+  cunning_document_scanner: ^1.2.3
+  path_provider: ^2.1.5
+  share_plus: ^10.1.1
+  pdf: ^3.11.1
 
 dev_dependencies:
   flutter_test:
