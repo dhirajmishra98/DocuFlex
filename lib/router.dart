@@ -1,4 +1,3 @@
-import 'features/scanner/doc_scanner_screen.dart';
 import 'onboarding/main_screen.dart';
 import 'onboarding/onboarding_screen.dart';
 import 'onboarding/splash_screen.dart';
@@ -19,11 +18,6 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
     case MainScreen.routeName:
       return MaterialPageRoute(
         builder: (context) => const MainScreen(),
-      );
-
-    case DocScannerScreen.routeName:
-      return MaterialPageRoute(
-        builder: (context) => const DocScannerScreen(),
       );
 
     default:
