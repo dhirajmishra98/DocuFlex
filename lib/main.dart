@@ -1,6 +1,6 @@
-import 'package:docuflex/onboarding/splash_screen.dart';
-import 'package:docuflex/router.dart';
-import 'package:docuflex/utils/constants.dart';
+import 'onboarding/splash_screen.dart';
+import 'router.dart';
+import 'utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

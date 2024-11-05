@@ -21,7 +21,7 @@ class _DocScannerScreenState extends State<DocScannerScreen> {
   Future<void> scanDocument() async {
     List<String>? paths = await CunningDocumentScanner.getPictures();
 
-    if (paths != null && paths.isNotEmpty) {
+    if (paths!.isNotEmpty) {
       setState(() {
         scannedImages = paths.map((path) => File(path)).toList();
       });
@@ -34,9 +34,7 @@ class _DocScannerScreenState extends State<DocScannerScreen> {
     for (var image in scannedImages) {
       final imageFile = pw.MemoryImage(image.readAsBytesSync());
       pdf.addPage(pw.Page(build: (pw.Context context) {
-        return pw.Center(
-          child: pw.Image(imageFile),
-        );
+        return pw.Image(imageFile);
       }));
     }
 
@@ -48,10 +46,19 @@ class _DocScannerScreenState extends State<DocScannerScreen> {
     });
   }
 
-  void sharePdf() {
+  void sharePdf() async {
+    debugPrint("reaching here 0");
     if (pdfFilePath != null) {
-      Share.share(pdfFilePath!, subject: 'Here is the scanned document!');
+      debugPrint("reaching here 1");
+      final result =
+          await Share.shareXFiles([XFile(pdfFilePath!)], text: 'Great picture');
+
+      if (result.status == ShareResultStatus.success) {
+        debugPrint('Thank you for sharing the picture!');
+      }
     }
+
+    debugPrint("reaching here2");
   }
 
   @override

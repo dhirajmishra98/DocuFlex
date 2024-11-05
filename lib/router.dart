@@ -1,7 +1,7 @@
-import 'package:docuflex/features/home/doc_scanner_screen.dart';
-import 'package:docuflex/onboarding/main_screen.dart';
-import 'package:docuflex/onboarding/onboarding_screen.dart';
-import 'package:docuflex/onboarding/splash_screen.dart';
+import 'features/home/doc_scanner_screen.dart';
+import 'onboarding/main_screen.dart';
+import 'onboarding/onboarding_screen.dart';
+import 'onboarding/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 Route<dynamic> generateRoute(RouteSettings routeSettings) {
