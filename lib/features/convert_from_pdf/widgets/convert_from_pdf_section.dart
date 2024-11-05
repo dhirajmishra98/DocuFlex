@@ -20,22 +20,22 @@ class ConvertFromPdfSection extends StatelessWidget {
             crossAxisSpacing: 5,
             mainAxisSpacing: 5,
             physics: const NeverScrollableScrollPhysics(),
-            children: const [
+            children: [
               CustomCard(
                 tileText: "PDF to Word",
-                iconPath: "assets/icons/word.png",
+                iconPath: "assets/icons/word.png", onTap: () {  },
               ),
               CustomCard(
                 tileText: "PDF to Excel",
-                iconPath: "assets/icons/excel.png",
+                iconPath: "assets/icons/excel.png", onTap: () {  },
               ),
               CustomCard(
                 tileText: "PDF to PPT",
-                iconPath: "assets/icons/ppt.png",
+                iconPath: "assets/icons/ppt.png", onTap: () {  },
               ),
               CustomCard(
                 tileText: "PDF to JPG",
-                iconPath: "assets/icons/jpg.png",
+                iconPath: "assets/icons/jpg.png", onTap: () {  },
               ),
             ],
           ),

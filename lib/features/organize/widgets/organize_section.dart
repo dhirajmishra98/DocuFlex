@@ -20,26 +20,26 @@ class OrganizeSection extends StatelessWidget {
             crossAxisSpacing: 5,
             mainAxisSpacing: 5,
             physics: const NeverScrollableScrollPhysics(),
-            children: const [
+            children: [
               CustomCard(
                 tileText: "Merge PDF",
-                iconPath: "assets/icons/merge.png",
+                iconPath: "assets/icons/merge.png", onTap: () {  },
               ),
               CustomCard(
                 tileText: "Split PDF",
-                iconPath: "assets/icons/split.png",
+                iconPath: "assets/icons/split.png", onTap: () {  },
               ),
               CustomCard(
                 tileText: "Rotate PDF",
-                iconPath: "assets/icons/rotate.png",
+                iconPath: "assets/icons/rotate.png", onTap: () {  },
               ),
               CustomCard(
                 tileText: "Delete PDF Pages",
-                iconPath: "assets/icons/delete.png",
+                iconPath: "assets/icons/delete.png", onTap: () {  },
               ),
               CustomCard(
                 tileText: "Extract PDF Pages",
-                iconPath: "assets/icons/extract.png",
+                iconPath: "assets/icons/extract.png", onTap: () {  },
               ),
             ],
           ),

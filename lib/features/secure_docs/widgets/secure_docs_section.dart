@@ -20,18 +20,18 @@ class SecureDocsSection extends StatelessWidget {
             crossAxisSpacing: 5,
             mainAxisSpacing: 5,
             physics: const NeverScrollableScrollPhysics(),
-            children: const [
+            children: [
               CustomCard(
                 tileText: "Lock PDF",
-                iconPath: "assets/icons/lock.png",
+                iconPath: "assets/icons/lock.png", onTap: () {  },
               ),
               CustomCard(
                 tileText: "Unlock PDF",
-                iconPath: "assets/icons/unlock.png",
+                iconPath: "assets/icons/unlock.png", onTap: () {  },
               ),
               CustomCard(
                 tileText: "Flatten PDF",
-                iconPath: "assets/icons/flatten.png",
+                iconPath: "assets/icons/flatten.png", onTap: () {  },
               ),
             ],
           ),
