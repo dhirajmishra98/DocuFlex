@@ -1,3 +1,5 @@
+import 'package:docuflex/utils/global_variables.dart';
+
 import 'onboarding/splash_screen.dart';
 import 'router.dart';
 import 'utils/constants.dart';
@@ -44,10 +46,11 @@ class _MyAppState extends State<MyApp> {
       title: 'DocuFlex',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: GlobalVariables.deepPurple),
         visualDensity: VisualDensity.adaptivePlatformDensity,
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.deepPurple,
+          backgroundColor: GlobalVariables.deepPurple,
           titleTextStyle: TextStyle(
             color: Colors.white,
             fontSize: 20,

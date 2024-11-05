@@ -1,14 +1,19 @@
-import 'package:crystal_navigation_bar/crystal_navigation_bar.dart';
+import 'package:docuflex/features/convert_from_pdf/widgets/convert_from_pdf_section.dart';
+import 'package:docuflex/features/convert_to_pdf/widgets/convert_to_pdf_section.dart';
+import 'package:docuflex/features/organize/widgets/organize_section.dart';
+import 'package:docuflex/features/scanner/widgets/scanner_section.dart';
+import 'package:docuflex/features/secure_docs/widgets/secure_docs_section.dart';
 import 'package:docuflex/utils/global_variables.dart';
 import 'package:docuflex/utils/utils.dart';
 import 'package:docuflex/widgets/custom_drawer.dart';
+import 'package:docuflex/widgets/recent_docs.dart';
+import 'package:docuflex/widgets/search_tool.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:remixicon/remixicon.dart';
 
-import '../features/scanner/doc_scanner_screen.dart';
-import '../utils/enums.dart';
+import '../widgets/slogan.dart';
 
 class MainScreen extends StatefulWidget {
   static const String routeName = "/main-screen";
@@ -19,22 +24,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  var _selectedTab = SelectedTab.scanner;
   final _advancedDrawerController = AdvancedDrawerController();
-
-  List<Widget> screens = [
-    const DocScannerScreen(),
-    const DocScannerScreen(),
-    const DocScannerScreen(),
-    const DocScannerScreen(),
-    const DocScannerScreen(),
-  ];
-
-  void _handleIndexChanged(int i) {
-    setState(() {
-      _selectedTab = SelectedTab.values[i];
-    });
-  }
 
   void _handleMenuButtonPressed() {
     _advancedDrawerController.showDrawer();
@@ -66,6 +56,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    MediaQuery.sizeOf(context);
     return AdvancedDrawer(
       backdrop: Container(
         width: double.infinity,
@@ -90,88 +81,63 @@ class _MainScreenState extends State<MainScreen> {
           Radius.circular(16),
         ),
       ),
-      drawer:const CustomDrawer(),
-      child: Scaffold(
-        extendBody: true,
-        appBar: AppBar(
-            title: const Text('DocuFlex'),
-            actions: [
-              IconButton(
-                icon: const Icon(
-                  Remix.more_2_fill,
-                ),
-                onPressed: () {},
-              )
-            ],
-            leading: IconButton(
-              onPressed: _handleMenuButtonPressed,
-              icon: ValueListenableBuilder<AdvancedDrawerValue>(
-                valueListenable: _advancedDrawerController,
-                builder: (_, value, __) {
-                  return AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 250),
-                    child: Icon(
-                      value.visible ? Icons.clear : Icons.menu,
-                      key: ValueKey<bool>(value.visible),
+      drawer: const CustomDrawer(),
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus(); // Hide keyboard and cursor
+        },
+        child: Scaffold(
+            extendBody: true,
+            appBar: AppBar(
+                title: const Text('DocuFlex'),
+                actions: [
+                  IconButton(
+                    icon: const Icon(
+                      Remix.more_2_fill,
                     ),
-                  );
-                },
-              ),
-            )),
-        body: screens[_selectedTab.index],
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: CrystalNavigationBar(
-            currentIndex: SelectedTab.values.indexOf(_selectedTab),
-            height: 10,
-            indicatorColor: Colors.purple,
-            unselectedItemColor: Colors.white70,
-            backgroundColor: Colors.deepPurple.withOpacity(0.1),
-            splashColor: Colors.transparent,
-            onTap: _handleIndexChanged,
-            items: [
-              /// Home
-              CrystalNavigationBarItem(
-                icon: Remix.home_4_fill,
-                unselectedIcon: Remix.home_4_line,
-                selectedColor: Colors.purple,
-                unselectedColor: Colors.grey,
-              ),
-
-              /// learn
-              CrystalNavigationBarItem(
-                icon: Remix.graduation_cap_fill,
-                unselectedIcon: Remix.graduation_cap_line,
-                selectedColor: Colors.purple,
-                unselectedColor: Colors.grey,
-              ),
-
-              /// scanner
-              CrystalNavigationBarItem(
-                icon: Remix.qr_code_fill,
-                unselectedIcon: Remix.qr_code_line,
-                selectedColor: Colors.purple,
-                unselectedColor: Colors.grey,
-              ),
-
-              /// quiz
-              CrystalNavigationBarItem(
-                icon: Remix.award_fill,
-                unselectedIcon: Remix.award_line,
-                selectedColor: Colors.purple,
-                unselectedColor: Colors.grey,
-              ),
-
-              /// revison
-              CrystalNavigationBarItem(
-                icon: Remix.brain_fill,
-                unselectedIcon: Remix.brain_line,
-                selectedColor: Colors.purple,
-                unselectedColor: Colors.grey,
-              ),
-            ],
-          ),
-        ),
+                    onPressed: () {},
+                  )
+                ],
+                leading: IconButton(
+                  onPressed: _handleMenuButtonPressed,
+                  icon: ValueListenableBuilder<AdvancedDrawerValue>(
+                    valueListenable: _advancedDrawerController,
+                    builder: (_, value, __) {
+                      return AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 250),
+                        child: Icon(
+                          value.visible ? Icons.clear : Icons.menu,
+                          key: ValueKey<bool>(value.visible),
+                        ),
+                      );
+                    },
+                  ),
+                )),
+            body: const SingleChildScrollView(
+                primary: true,
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Slogan(),
+                      Divider(
+                        thickness: 1,
+                        color: GlobalVariables.deepPurple,
+                        endIndent: 25,
+                        indent: 25,
+                      ),
+                      RecentDocs(),
+                      SearchTool(),
+                      ScannerSection(),
+                      ConvertToPdfSection(),
+                      ConvertFromPdfSection(),
+                      OrganizeSection(),
+                      SecureDocsSection(),
+                    ],
+                  ),
+                ))),
       ),
     );
   }

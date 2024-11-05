@@ -97,14 +97,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.6"
-  crystal_navigation_bar:
-    dependency: "direct main"
-    description:
-      name: crystal_navigation_bar
-      sha256: f7d84349e34d339799f3e6c0196c792d99bf87f293808846c00e15754c1e72b8
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   cunning_document_scanner:
     dependency: "direct main"
     description:
