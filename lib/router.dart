@@ -1,4 +1,4 @@
-import 'features/home/doc_scanner_screen.dart';
+import 'features/scanner/doc_scanner_screen.dart';
 import 'onboarding/main_screen.dart';
 import 'onboarding/onboarding_screen.dart';
 import 'onboarding/splash_screen.dart';

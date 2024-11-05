@@ -7,7 +7,7 @@ import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:remixicon/remixicon.dart';
 
-import '../features/home/doc_scanner_screen.dart';
+import '../features/scanner/doc_scanner_screen.dart';
 import '../utils/enums.dart';
 
 class MainScreen extends StatefulWidget {
