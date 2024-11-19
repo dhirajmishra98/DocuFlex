@@ -28,3 +28,9 @@ void showSnackbar(BuildContext context, String message, Color color) {
   );
   ScaffoldMessenger.of(context).showSnackBar(snackbar);
 }
+
+  String getFileNameWithExtension(String name) {
+    // Ensure filename has a ".pdf" extension
+    final fileName = name;
+    return fileName.endsWith('.pdf') ? fileName : '$fileName.pdf';
+  }

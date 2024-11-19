@@ -11,6 +11,7 @@ import 'package:docuflex/widgets/search_tool.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:in_app_update/in_app_update.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:remixicon/remixicon.dart';
 
 import '../widgets/slogan.dart';
@@ -48,10 +49,24 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  Future<void> _askPermissions() async {
+    var externalStoragePermission =
+        await Permission.manageExternalStorage.status;
+    if (!externalStoragePermission.isGranted) {
+      await Permission.manageExternalStorage.request();
+    }
+
+    var imagePermission = await Permission.photos.status;
+    if (!imagePermission.isGranted) {
+      await Permission.photos.request();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _checkForAppUpdate();
+    _askPermissions();
   }
 
   @override
