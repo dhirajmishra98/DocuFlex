@@ -13,10 +13,6 @@ class RecentDocs extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        const SectionHeader(
-          headerText: "Recents",
-        ),
-        const Gap(5),
         SizedBox(
           height: 80,
           width: double.infinity,

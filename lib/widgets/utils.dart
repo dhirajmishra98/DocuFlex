@@ -11,6 +11,7 @@ class SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       headerText,
+      textAlign: TextAlign.start,
       style: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,

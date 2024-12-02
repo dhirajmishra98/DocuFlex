@@ -2,9 +2,11 @@
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+<uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:requestLegacyExternalStorage="true"
+        android:enableOnBackInvokedCallback="true"
         android:label="docuflex"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
@@ -45,6 +47,20 @@
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
+        </intent>
+        <!-- If your app checks for SMS support -->
+        <intent>
+          <action android:name="android.intent.action.VIEW" />
+          <data android:scheme="sms" />
+        </intent>
+        <!-- If your app checks for call support -->
+        <intent>
+          <action android:name="android.intent.action.VIEW" />
+          <data android:scheme="tel" />
+        </intent>
+        <!-- If your application checks for inAppBrowserView launch mode support -->
+        <intent>
+          <action android:name="android.support.customtabs.action.CustomTabsService" />
         </intent>
     </queries>
 </manifest>

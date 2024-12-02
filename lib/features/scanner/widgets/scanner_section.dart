@@ -170,8 +170,9 @@ class _ScannerSectionState extends State<ScannerSection> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(headerText: "Scan to PDF"),
+        const SectionHeader(headerText: "Scanner"),
         SizedBox(
           height: 100,
           width: 100,

@@ -2,19 +2,17 @@ import 'package:docuflex/features/convert_from_pdf/widgets/convert_from_pdf_sect
 import 'package:docuflex/features/convert_to_pdf/widgets/convert_to_pdf_section.dart';
 import 'package:docuflex/features/organize/widgets/organize_section.dart';
 import 'package:docuflex/features/scanner/widgets/scanner_section.dart';
-import 'package:docuflex/features/secure_docs/widgets/secure_docs_section.dart';
+import 'package:docuflex/features/secure/widgets/secure_docs_section.dart';
 import 'package:docuflex/utils/global_variables.dart';
 import 'package:docuflex/utils/utils.dart';
 import 'package:docuflex/widgets/custom_drawer.dart';
 import 'package:docuflex/widgets/recent_docs.dart';
-import 'package:docuflex/widgets/search_tool.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+import 'package:gap/gap.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:remixicon/remixicon.dart';
-
-import '../widgets/slogan.dart';
 
 class MainScreen extends StatefulWidget {
   static const String routeName = "/main-screen";
@@ -107,6 +105,12 @@ class _MainScreenState extends State<MainScreen> {
                 title: const Text('DocuFlex'),
                 actions: [
                   IconButton(
+                    icon: const Icon(Icons.search, color: Colors.white),
+                    onPressed: () {
+                      // Add search functionality
+                    },
+                  ),
+                  IconButton(
                     icon: const Icon(
                       Remix.more_2_fill,
                     ),
@@ -136,20 +140,14 @@ class _MainScreenState extends State<MainScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Slogan(),
-                      Divider(
-                        thickness: 1,
-                        color: GlobalVariables.deepPurple,
-                        endIndent: 25,
-                        indent: 25,
-                      ),
                       RecentDocs(),
-                      SearchTool(),
+                      Gap(10),
                       ScannerSection(),
                       ConvertToPdfSection(),
                       ConvertFromPdfSection(),
                       OrganizeSection(),
                       SecureDocsSection(),
+                      Text("zip/unizp section"),
                     ],
                   ),
                 ))),

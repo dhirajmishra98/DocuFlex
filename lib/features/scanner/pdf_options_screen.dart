@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../utils/global_variables.dart';
 import '../../utils/utils.dart';
+import '../../widgets/custom_button.dart';
 import 'pdf_viewer_screen.dart';
 
 class PdfOptionsScreen extends StatefulWidget {
@@ -175,21 +176,11 @@ class _PdfOptionsScreenState extends State<PdfOptionsScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  ElevatedButton.icon(
-                    onPressed: () => widget.onChangeLocationAndSave(
+                  CustomButton(
+                    onPressed: ()=> widget.onChangeLocationAndSave(
                         widget.fileNameController.text),
-                    icon: const Icon(Icons.location_on_outlined),
-                    label: const Text("change document location"),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor:
-                          GlobalVariables.deepPurple.withOpacity(0.8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 20), // optional for spacing
-                    ),
+                    iconData: Icons.location_on_outlined,
+                    label: "change document location",
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,

@@ -1,4 +1,5 @@
 import 'package:docuflex/utils/global_variables.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'onboarding/splash_screen.dart';
 import 'router.dart';
@@ -9,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'onboarding/main_screen.dart';
 import 'onboarding/onboarding_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }

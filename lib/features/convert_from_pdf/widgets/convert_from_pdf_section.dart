@@ -1,41 +1,144 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_card.dart';
 import '../../../widgets/utils.dart';
 
-class ConvertFromPdfSection extends StatelessWidget {
+class ConvertFromPdfSection extends StatefulWidget {
   const ConvertFromPdfSection({super.key});
+
+  @override
+  State<ConvertFromPdfSection> createState() => _ConvertFromPdfSectionState();
+}
+
+class _ConvertFromPdfSectionState extends State<ConvertFromPdfSection> {
+  String? _secondFormat;
+
+  Future<void> _launchUrl() async {
+    if (_secondFormat == null) return;
+
+    // Construct the URL dynamically based on selected formats
+    final Uri url = Uri.parse(
+      "https://smallpdf.com/pdf-to-${_secondFormat!.toLowerCase()}",
+    );
+
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  void _showFormatOptions(
+      BuildContext context, Function(String) onFormatSelected) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => Container(
+        padding: const EdgeInsets.all(16),
+        child: Wrap(
+          children: [
+            const Text(
+              "Choose Format to Convert",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            GridView.count(
+              crossAxisCount: 3,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 1.0,
+              children: [
+                CustomCard(
+                    tileText: "Word",
+                    iconPath: "assets/icons/word.png",
+                    onTap: () {
+                      onFormatSelected("Word");
+                      Navigator.pop(context);
+                    }),
+                CustomCard(
+                    tileText: "Excel",
+                    iconPath: "assets/icons/excel.png",
+                    onTap: () {
+                      onFormatSelected("Excel");
+                      Navigator.pop(context);
+                    }),
+                CustomCard(
+                    tileText: "PPT",
+                    iconPath: "assets/icons/ppt.png",
+                    onTap: () {
+                      onFormatSelected("PPT");
+                      Navigator.pop(context);
+                    }),
+                CustomCard(
+                    tileText: "JPG",
+                    iconPath: "assets/icons/jpg.png",
+                    onTap: () {
+                      onFormatSelected("JPG");
+                      Navigator.pop(context);
+                    }),
+               
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  bool get _isConvertButtonActive =>
+      _secondFormat != null && _secondFormat != "PDF";
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(headerText: "Convert from PDF"),
+        SectionHeader(headerText: "Convert From PDF"),
         SizedBox(
-          height: 200, // Adjust the height to suit your design
-          child: GridView.count(
-            crossAxisCount: 3, // Adjust the number of columns
-            childAspectRatio: 1.2,
-            crossAxisSpacing: 5,
-            mainAxisSpacing: 5,
-            physics: const NeverScrollableScrollPhysics(),
+          height: 90, // Adjust the height to suit your design
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomCard(
-                tileText: "PDF to Word",
-                iconPath: "assets/icons/word.png", onTap: () {  },
+              Expanded(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: CustomCard(
+                          tileText: "PDF",
+                          iconPath: "assets/icons/pdf.png",
+                          onTap: () {}),
+                    ),
+                  ],
+                ),
               ),
-              CustomCard(
-                tileText: "PDF to Excel",
-                iconPath: "assets/icons/excel.png", onTap: () {  },
+              Expanded(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: CustomCard(
+                        tileText: _secondFormat ?? "To",
+                        iconPath: _secondFormat != null
+                            ? "assets/icons/${_secondFormat!.toLowerCase()}.png"
+                            : "assets/icons/word.png",
+                        onTap: () => _showFormatOptions(context, (format) {
+                          setState(() {
+                            _secondFormat = format;
+                          });
+                        }),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              CustomCard(
-                tileText: "PDF to PPT",
-                iconPath: "assets/icons/ppt.png", onTap: () {  },
-              ),
-              CustomCard(
-                tileText: "PDF to JPG",
-                iconPath: "assets/icons/jpg.png", onTap: () {  },
+              CustomButton(
+                label: "Convert",
+                iconData: Icons.loop,
+                onPressed: _isConvertButtonActive ? _launchUrl : null,
+                isActiveButton: _isConvertButtonActive,
               ),
             ],
           ),

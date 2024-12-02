@@ -1,61 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_card.dart';
 import '../../../widgets/utils.dart';
 
-class ConvertToPdfSection extends StatelessWidget {
+class ConvertToPdfSection extends StatefulWidget {
   const ConvertToPdfSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SectionHeader(headerText: "Convert to PDF"),
-        SizedBox(
-          height: 200, // Adjust the height to suit your design
-          child: GridView.count(
-            crossAxisCount: 3, // Adjust the number of columns
-            childAspectRatio: 1.2,
-            crossAxisSpacing: 5,
-            mainAxisSpacing: 5,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              CustomCard(
-                tileText: "Word to PDF",
-                iconPath: "assets/icons/word.png", onTap: () {  },
-              ),
-              CustomCard(
-                tileText: "Excel to PDF",
-                iconPath: "assets/icons/excel.png", onTap: () {  },
-              ),
-              CustomCard(
-                tileText: "PPT to PDF",
-                iconPath: "assets/icons/ppt.png", onTap: () {  },
-              ),
-              CustomCard(
-                tileText: "JPG to PDF",
-                iconPath: "assets/icons/jpg.png", onTap: () {  },
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+  State<ConvertToPdfSection> createState() => _ConvertToPdfSectionState();
 }
 
-/*
-//Another UI using bottomsheet
-import 'package:flutter/material.dart';
+class _ConvertToPdfSectionState extends State<ConvertToPdfSection> {
+  String? _firstFormat;
 
-import '../../../widgets/custom_card.dart';
-import '../../../widgets/utils.dart';
+  Future<void> _launchUrl() async {
+    if (_firstFormat == null) return;
 
-class ConvertToPdfSection extends StatelessWidget {
-  const ConvertToPdfSection({super.key});
+    // Construct the URL dynamically based on selected formats
+    final Uri url = Uri.parse(
+      "https://smallpdf.com/${_firstFormat!.toLowerCase()}-to-pdf",
+    );
 
-  void _showFormatOptions(BuildContext context) {
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  void _showFormatOptions(
+      BuildContext context, Function(String) onFormatSelected) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -79,21 +53,33 @@ class ConvertToPdfSection extends StatelessWidget {
               childAspectRatio: 1.0,
               children: [
                 CustomCard(
-                    tileText: "Word to PDF",
+                    tileText: "Word",
                     iconPath: "assets/icons/word.png",
-                    onTap: () {}),
+                    onTap: () {
+                      onFormatSelected("Word");
+                      Navigator.pop(context);
+                    }),
                 CustomCard(
-                    tileText: "Excel to PDF",
+                    tileText: "Excel",
                     iconPath: "assets/icons/excel.png",
-                    onTap: () {}),
+                    onTap: () {
+                      onFormatSelected("Excel");
+                      Navigator.pop(context);
+                    }),
                 CustomCard(
-                    tileText: "PPT to PDF",
+                    tileText: "PPT",
                     iconPath: "assets/icons/ppt.png",
-                    onTap: () {}),
+                    onTap: () {
+                      onFormatSelected("PPT");
+                      Navigator.pop(context);
+                    }),
                 CustomCard(
-                    tileText: "JPG to PDF",
+                    tileText: "JPG",
                     iconPath: "assets/icons/jpg.png",
-                    onTap: () {}),
+                    onTap: () {
+                      onFormatSelected("JPG");
+                      Navigator.pop(context);
+                    }),
               ],
             ),
           ],
@@ -102,62 +88,61 @@ class ConvertToPdfSection extends StatelessWidget {
     );
   }
 
+  bool get _isConvertButtonActive =>
+      _firstFormat != null && _firstFormat != "PDF";
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(headerText: "Convert to PDF"),
+        SectionHeader(headerText: "Convert To PDF"),
         SizedBox(
-            height: 135, // Adjust the height to suit your design
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: CustomCard(
-                          tileText: "Choose Format",
-                          iconPath: "assets/icons/word.png",
-                          onTap: () => _showFormatOptions(context),
-                        ),
+          height: 90, // Adjust the height to suit your design
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: CustomCard(
+                        tileText: _firstFormat ?? "From",
+                        iconPath: _firstFormat != null
+                            ? "assets/icons/${_firstFormat!.toLowerCase()}.png"
+                            : "assets/icons/word.png",
+                        onTap: () => _showFormatOptions(context, (format) {
+                          setState(() {
+                            _firstFormat = format;
+                          });
+                        }),
                       ),
-                      TextButton.icon(
-                        onPressed: () {
-                          // Upload document functionality here
-                        },
-                        icon: const Icon(Icons.upload),
-                        label: const Text("Upload"),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                Icon(Icons.arrow_forward, size: 40, color: Colors.teal),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: CustomCard(
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: CustomCard(
                           tileText: "PDF",
                           iconPath: "assets/icons/pdf.png",
-                          onTap: () {}, // No need to change PDF option
-                        ),
-                      ),
-                      TextButton.icon(
-                        onPressed: () {
-                          // Convert and Download functionality here
-                        },
-                        icon: const Icon(Icons.download),
-                        label: const Text("Convert"),
-                      ),
-                    ],
-                  ),
+                          onTap: () {}),
+                    ),
+                  ],
                 ),
-              ],
-            )),
+              ),
+              CustomButton(
+                label: "Convert",
+                iconData: Icons.loop,
+                onPressed: _isConvertButtonActive ? _launchUrl : null,
+                isActiveButton: _isConvertButtonActive,
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
 }
-*/
