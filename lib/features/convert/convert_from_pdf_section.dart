@@ -1,9 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:docuflex/widgets/internet_checker.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../widgets/custom_button.dart';
-import '../../../widgets/custom_card.dart';
-import '../../../widgets/utils.dart';
+import '../../utils/utils.dart';
+import '../../widgets/custom_button.dart';
+import '../../widgets/custom_card.dart';
 
 class ConvertFromPdfSection extends StatefulWidget {
   const ConvertFromPdfSection({super.key});
@@ -17,6 +21,17 @@ class _ConvertFromPdfSectionState extends State<ConvertFromPdfSection> {
 
   Future<void> _launchUrl() async {
     if (_secondFormat == null) return;
+    if (!await InternetChecker.isInternetAvailable()) {
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        title: "No Internet",
+        desc: "Please check internet connection",
+        btnOkText: "Ok",
+        btnOkOnPress: () {},
+      ).show();
+      return;
+    }
 
     // Construct the URL dynamically based on selected formats
     final Uri url = Uri.parse(
@@ -24,7 +39,7 @@ class _ConvertFromPdfSectionState extends State<ConvertFromPdfSection> {
     );
 
     if (!await launchUrl(url)) {
-      throw Exception('Could not launch $url');
+      showSnackbar(context, 'Could not launch $url', Colors.red);
     }
   }
 
@@ -80,7 +95,6 @@ class _ConvertFromPdfSectionState extends State<ConvertFromPdfSection> {
                       onFormatSelected("JPG");
                       Navigator.pop(context);
                     }),
-               
               ],
             ),
           ],
@@ -97,7 +111,6 @@ class _ConvertFromPdfSectionState extends State<ConvertFromPdfSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionHeader(headerText: "Convert From PDF"),
         SizedBox(
           height: 90, // Adjust the height to suit your design
           child: Row(
@@ -115,6 +128,13 @@ class _ConvertFromPdfSectionState extends State<ConvertFromPdfSection> {
                   ],
                 ),
               ),
+              const Text(
+                "→",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25,
+                ),
+              ),
               Expanded(
                 child: Column(
                   children: [
@@ -123,7 +143,7 @@ class _ConvertFromPdfSectionState extends State<ConvertFromPdfSection> {
                         tileText: _secondFormat ?? "To",
                         iconPath: _secondFormat != null
                             ? "assets/icons/${_secondFormat!.toLowerCase()}.png"
-                            : "assets/icons/word.png",
+                            : "assets/icons/format.png",
                         onTap: () => _showFormatOptions(context, (format) {
                           setState(() {
                             _secondFormat = format;

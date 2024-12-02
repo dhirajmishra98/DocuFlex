@@ -1,9 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:docuflex/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../widgets/custom_button.dart';
-import '../../../widgets/custom_card.dart';
-import '../../../widgets/utils.dart';
+import '../../widgets/custom_button.dart';
+import '../../widgets/custom_card.dart';
+import '../../widgets/internet_checker.dart';
+import '../../widgets/utils.dart';
 
 class ConvertToPdfSection extends StatefulWidget {
   const ConvertToPdfSection({super.key});
@@ -17,6 +22,17 @@ class _ConvertToPdfSectionState extends State<ConvertToPdfSection> {
 
   Future<void> _launchUrl() async {
     if (_firstFormat == null) return;
+    if (!await InternetChecker.isInternetAvailable()) {
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        title: "No Internet",
+        desc: "Please check internet connection",
+        btnOkText: "Ok",
+        btnOkOnPress: () {},
+      ).show();
+      return;
+    }
 
     // Construct the URL dynamically based on selected formats
     final Uri url = Uri.parse(
@@ -24,7 +40,7 @@ class _ConvertToPdfSectionState extends State<ConvertToPdfSection> {
     );
 
     if (!await launchUrl(url)) {
-      throw Exception('Could not launch $url');
+      showSnackbar(context, 'Could not launch $url', Colors.red);
     }
   }
 
@@ -96,7 +112,7 @@ class _ConvertToPdfSectionState extends State<ConvertToPdfSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SectionHeader(headerText: "Convert To PDF"),
+        const SectionHeader(headerText: "Convert"),
         SizedBox(
           height: 90, // Adjust the height to suit your design
           child: Row(
@@ -110,7 +126,7 @@ class _ConvertToPdfSectionState extends State<ConvertToPdfSection> {
                         tileText: _firstFormat ?? "From",
                         iconPath: _firstFormat != null
                             ? "assets/icons/${_firstFormat!.toLowerCase()}.png"
-                            : "assets/icons/word.png",
+                            : "assets/icons/format.png",
                         onTap: () => _showFormatOptions(context, (format) {
                           setState(() {
                             _firstFormat = format;
@@ -119,6 +135,13 @@ class _ConvertToPdfSectionState extends State<ConvertToPdfSection> {
                       ),
                     ),
                   ],
+                ),
+              ),
+              const Text(
+                "→",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25,
                 ),
               ),
               Expanded(

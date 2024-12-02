@@ -1,8 +1,6 @@
 import 'package:docuflex/utils/global_variables.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 
-import 'utils.dart';
 
 class RecentDocs extends StatelessWidget {
   const RecentDocs({super.key});

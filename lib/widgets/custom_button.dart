@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../utils/global_variables.dart';
 
+// ignore: must_be_immutable
 class CustomButton extends StatelessWidget {
   CustomButton({
     super.key,

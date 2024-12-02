@@ -1,5 +1,4 @@
 import 'package:docuflex/utils/global_variables.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import 'onboarding/splash_screen.dart';
 import 'router.dart';

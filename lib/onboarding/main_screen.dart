@@ -1,5 +1,5 @@
-import 'package:docuflex/features/convert_from_pdf/widgets/convert_from_pdf_section.dart';
-import 'package:docuflex/features/convert_to_pdf/widgets/convert_to_pdf_section.dart';
+import 'package:docuflex/features/convert/convert_from_pdf_section.dart';
+import 'package:docuflex/features/convert/convert_to_pdf_section.dart';
 import 'package:docuflex/features/organize/widgets/organize_section.dart';
 import 'package:docuflex/features/scanner/widgets/scanner_section.dart';
 import 'package:docuflex/features/secure/widgets/secure_docs_section.dart';
