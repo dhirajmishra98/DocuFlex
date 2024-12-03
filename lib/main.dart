@@ -1,4 +1,4 @@
-import 'package:docuflex/utils/global_variables.dart';
+import 'utils/global_variables.dart';
 
 import 'onboarding/splash_screen.dart';
 import 'router.dart';

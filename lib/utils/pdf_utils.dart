@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:image/image.dart' as img;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:syncfusion_flutter_pdf/pdf.dart' as pdf;
 
 Future<pw.Document> generatePdf(List<File> scannedImages) async {
   final pdf = pw.Document();
@@ -84,4 +85,13 @@ Future<pw.Document> generatePdf(List<File> scannedImages) async {
   }
 
   return pdf;
+}
+
+Future<int> getPdfPageCount(String filePath) async {
+  final pdfDocument =
+      pdf.PdfDocument(inputBytes: await File(filePath).readAsBytes());
+
+  int pageCount = pdfDocument.pages.count;
+  pdfDocument.dispose(); // Always dispose the document
+  return pageCount;
 }

@@ -9,16 +9,19 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:gap/gap.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
+import 'package:pdf_manipulator/pdf_manipulator.dart';
 
-class FileConversionBottomSheet extends StatefulWidget {
+class MergePdfBottomSheet extends StatefulWidget {
   final String title;
   final List<String>? allowedExtensions;
   final String invalidFormatWarningMessage;
   final String buttonLabel;
   final IconData buttonIcon;
-  final Function(List<String> filePaths) callback;
+  final Function(String) callback;
 
-  const FileConversionBottomSheet({
+  const MergePdfBottomSheet({
     super.key,
     required this.title,
     this.allowedExtensions,
@@ -29,11 +32,10 @@ class FileConversionBottomSheet extends StatefulWidget {
   });
 
   @override
-  State<FileConversionBottomSheet> createState() =>
-      _FileConversionBottomSheetState();
+  State<MergePdfBottomSheet> createState() => _MergePdfBottomSheetState();
 }
 
-class _FileConversionBottomSheetState extends State<FileConversionBottomSheet> {
+class _MergePdfBottomSheetState extends State<MergePdfBottomSheet> {
   List<File> selectedFiles = [];
 
   Future<void> _pickFiles() async {
@@ -78,8 +80,28 @@ class _FileConversionBottomSheetState extends State<FileConversionBottomSheet> {
       }
 
       setState(() {});
-      debugPrint(selectedFiles.length.toString());
     }
+  }
+
+  Future<String?> _mergePdfs(List<String> pdfsPaths) async {
+    String? mergedPdfPath = await PdfManipulator().mergePDFs(
+      params: PDFMergerParams(pdfsPaths: pdfsPaths),
+    );
+
+    if (mergedPdfPath != null) {
+      final output = await getTemporaryDirectory();
+      final mergedFile = File(mergedPdfPath);
+
+      // Define the new file name
+      final newFilePath = path.join(output.path, "merged.pdf");
+
+      // Rename the file
+      final renamedFile = await mergedFile.rename(newFilePath);
+
+      // Update the mergedPdfPath to the renamed file
+      return renamedFile.path;
+    }
+    return null;
   }
 
   @override
@@ -199,13 +221,13 @@ class _FileConversionBottomSheetState extends State<FileConversionBottomSheet> {
                   isActiveButton: selectedFiles.isEmpty ? false : true,
                   onPressed: selectedFiles.isEmpty
                       ? null
-                      : () {
+                      : () async {
                           List<String> paths = [];
                           for (var file in selectedFiles) {
                             paths.add(file.path);
                           }
-                          widget.callback(paths);
-                          debugPrint("Dhiraj ${selectedFiles.length}");
+                          String? mergedFilePath = await _mergePdfs(paths);
+                          widget.callback(mergedFilePath!);
                         },
                 ),
               ],

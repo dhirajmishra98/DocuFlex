@@ -1,4 +1,4 @@
-import 'package:docuflex/utils/global_variables.dart';
+import '../../utils/global_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 

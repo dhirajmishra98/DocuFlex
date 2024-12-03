@@ -35,3 +35,29 @@ String getFileNameWithExtension(String name) {
   return fileName.endsWith('.pdf') ? fileName : '$fileName.pdf';
 }
 
+bool validatePageCount(String value, int totalPageCount) {
+  final int? count = int.tryParse(value);
+  return count != null && count > 0 && count < totalPageCount;
+}
+
+bool validateByteSize(String value) {
+  final int? size = int.tryParse(value);
+  return size != null && size > 0;
+}
+
+bool validatePageNumbers(String value, int totalPageCount) {
+  final List<String> numbers = value.split(',');
+  final Set<int> pageNumbers = {};
+  
+  for (var number in numbers) {
+    final int? parsedNumber = int.tryParse(number.trim());
+    if (parsedNumber == null ||
+        parsedNumber <= 0 ||
+        parsedNumber > totalPageCount ||
+        !pageNumbers.add(parsedNumber)) {
+      return false;
+    }
+  }
+  return true;
+}
+

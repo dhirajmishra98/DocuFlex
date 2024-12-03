@@ -61,6 +61,7 @@ dependencies:
   url_launcher: ^6.3.1
   connectivity_plus: ^6.1.0
   webview_flutter: ^4.8.0
+  path: ^1.9.0
 
 
 dev_dependencies:

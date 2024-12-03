@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -6,15 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
-import 'package:pdf_manipulator/pdf_manipulator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'package:docuflex/widgets/file_conversion_bottomsheet.dart';
-
-import '../../../utils/utils.dart';
-import '../../../widgets/custom_card.dart';
-import '../../../widgets/utils.dart';
-import '../../scanner/pdf_options_screen.dart';
+import '../../utils/utils.dart';
+import '../../widgets/custom_card.dart';
+import '../../widgets/utils.dart';
+import '../scanner/pdf_options_screen.dart';
+import 'widgets/merge_pdf_bottomsheet.dart';
+import 'widgets/split_pdf_bottomsheet.dart';
 
 class OrganizeSection extends StatefulWidget {
   const OrganizeSection({super.key});
@@ -24,39 +25,24 @@ class OrganizeSection extends StatefulWidget {
 }
 
 class _OrganizeSectionState extends State<OrganizeSection> {
-  String? mergedPdfPath;
+  String? operatedPdfPath;
 
-  Future<void> _mergePdfs(List<String> pdfsPaths) async {
-    mergedPdfPath = await PdfManipulator().mergePDFs(
-      params: PDFMergerParams(pdfsPaths: pdfsPaths),
-    );
-
-    if (mergedPdfPath != null) {
-      final output = await getTemporaryDirectory();
-      final mergedFile = File(mergedPdfPath!);
-
-      // Define the new file name
-      final newFilePath = path.join(output.path, "merged.pdf");
-
-      // Rename the file
-      final renamedFile = await mergedFile.rename(newFilePath);
-
-      // Update the mergedPdfPath to the renamed file
-      mergedPdfPath = renamedFile.path;
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => PdfOptionsScreen(
-            pageTitle: "Merged Document",
-            pdfFilePath: output.path,
-            fileNameController:
-                TextEditingController(text: path.basename(mergedPdfPath!)),
-            onSave: showSaveConfirmation,
-            onChangeLocationAndSave: changeLocationAndSavePdfToDevice,
-          ),
+  Future<void> navigateToPdfOptionScreen(
+      String pdfPath, String pageTitle) async {
+    final output = await getTemporaryDirectory();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PdfOptionsScreen(
+          pageTitle: pageTitle,
+          pdfFilePath: output.path,
+          fileNameController:
+              TextEditingController(text: path.basename(pdfPath)),
+          onSave: showSaveConfirmation,
+          onChangeLocationAndSave: changeLocationAndSavePdfToDevice,
         ),
-      );
-    }
+      ),
+    );
   }
 
   Future<void> changeLocationAndSavePdfToDevice(String fileName) async {
@@ -67,8 +53,8 @@ class _OrganizeSectionState extends State<OrganizeSection> {
       }
       String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
 
-      if (mergedPdfPath != null) {
-        final pdfFile = File(mergedPdfPath!);
+      if (operatedPdfPath != null) {
+        final pdfFile = File(operatedPdfPath!);
 
         String newFilePath = "";
 
@@ -86,17 +72,17 @@ class _OrganizeSectionState extends State<OrganizeSection> {
 
         await pdfFile.copy(newFilePath);
         setState(() {
-          mergedPdfPath = newFilePath;
+          operatedPdfPath = newFilePath;
         });
 
         AwesomeDialog(
           context: context,
           dialogType: DialogType.success,
           title: "Document Saved",
-          desc: "The document has been saved to: $mergedPdfPath",
+          desc: "The document has been saved to: $operatedPdfPath",
           btnOkText: "Open",
           btnOkOnPress: () {
-            OpenFile.open(mergedPdfPath);
+            OpenFile.open(operatedPdfPath);
           },
         ).show();
       } else {
@@ -121,9 +107,9 @@ class _OrganizeSectionState extends State<OrganizeSection> {
         '${selectedDirectory.path}/${getFileNameWithExtension(fileName)}';
 
     // Copy to the final destination in app documents directory
-    File(mergedPdfPath!).copySync(newFilePath);
+    File(operatedPdfPath!).copySync(newFilePath);
     setState(() {
-      mergedPdfPath = newFilePath;
+      operatedPdfPath = newFilePath;
     });
 
     // Display confirmation dialog
@@ -131,10 +117,10 @@ class _OrganizeSectionState extends State<OrganizeSection> {
       context: context,
       dialogType: DialogType.success,
       title: "Document Saved",
-      desc: "The document has been saved to: $mergedPdfPath",
+      desc: "The document has been saved to: $operatedPdfPath",
       btnOkText: "Open",
       btnOkOnPress: () {
-        OpenFile.open(mergedPdfPath);
+        OpenFile.open(operatedPdfPath);
       },
     ).show();
   }
@@ -160,20 +146,37 @@ class _OrganizeSectionState extends State<OrganizeSection> {
                 onTap: () => showModalBottomSheet(
                   isScrollControlled: true,
                   context: context,
-                  builder: (context) => FileConversionBottomSheet(
+                  builder: (context) => MergePdfBottomSheet(
                     title: "Merge Pdfs",
                     allowedExtensions: const ['pdf'],
                     invalidFormatWarningMessage: "Please select only PDFs",
                     buttonLabel: "Merge",
                     buttonIcon: Icons.merge,
-                    callback: (filePaths) => _mergePdfs(filePaths),
+                    callback: (mergedPath) {
+                      setState(() {
+                        operatedPdfPath = mergedPath;
+                      });
+                      navigateToPdfOptionScreen(mergedPath, "Merged PDF");
+                    },
                   ),
                 ),
               ),
               CustomCard(
                 tileText: "Split PDF",
                 iconPath: "assets/icons/split.png",
-                onTap: () {},
+                onTap: () => showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (context) => SplitPdfBottomSheet(
+                    title: "Split PDF",
+                    onSplitComplete: (splitPath) {
+                      setState(() {
+                        operatedPdfPath = splitPath;
+                      });
+                      navigateToPdfOptionScreen(splitPath, "Splitted PDF");
+                    },
+                  ),
+                ),
               ),
               CustomCard(
                 tileText: "Rotate PDF",
