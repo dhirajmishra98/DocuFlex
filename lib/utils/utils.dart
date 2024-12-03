@@ -34,3 +34,4 @@ String getFileNameWithExtension(String name) {
   final fileName = name;
   return fileName.endsWith('.pdf') ? fileName : '$fileName.pdf';
 }
+

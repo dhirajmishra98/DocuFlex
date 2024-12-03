@@ -89,13 +89,6 @@ class _ConvertToPdfSectionState extends State<ConvertToPdfSection> {
                       onFormatSelected("PPT");
                       Navigator.pop(context);
                     }),
-                CustomCard(
-                    tileText: "JPG",
-                    iconPath: "assets/icons/jpg.png",
-                    onTap: () {
-                      onFormatSelected("JPG");
-                      Navigator.pop(context);
-                    }),
               ],
             ),
           ],
@@ -160,6 +153,54 @@ class _ConvertToPdfSectionState extends State<ConvertToPdfSection> {
                 label: "Convert",
                 iconData: Icons.loop,
                 onPressed: _isConvertButtonActive ? _launchUrl : null,
+                isActiveButton: _isConvertButtonActive,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 90, // Adjust the height to suit your design
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: CustomCard(
+                        tileText: _firstFormat ?? "Images",
+                        iconPath: _firstFormat != null
+                            ? "assets/icons/${_firstFormat!.toLowerCase()}.png"
+                            : "assets/icons/jpg.png",
+                        onTap: () {},
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Text(
+                "→",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25,
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: CustomCard(
+                          tileText: "PDF",
+                          iconPath: "assets/icons/pdf.png",
+                          onTap: () {}),
+                    ),
+                  ],
+                ),
+              ),
+              CustomButton(
+                label: "Convert",
+                iconData: Icons.loop,
+                onPressed: _isConvertButtonActive ? () {} : null,
                 isActiveButton: _isConvertButtonActive,
               ),
             ],

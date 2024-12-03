@@ -14,8 +14,9 @@ class PdfOptionsScreen extends StatefulWidget {
   final TextEditingController fileNameController;
   final Function onSave;
   final Function onChangeLocationAndSave;
-  final Function onResumeScanning;
+  final Function? onResumeScanning;
   final List<String>? scannedImagesPaths;
+  final String pageTitle;
 
   const PdfOptionsScreen({
     super.key,
@@ -23,8 +24,9 @@ class PdfOptionsScreen extends StatefulWidget {
     required this.fileNameController,
     required this.onSave,
     required this.onChangeLocationAndSave,
-    required this.onResumeScanning,
-    required this.scannedImagesPaths,
+    this.onResumeScanning,
+    this.scannedImagesPaths,
+    required this.pageTitle,
   });
 
   @override
@@ -70,12 +72,14 @@ class _PdfOptionsScreenState extends State<PdfOptionsScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-            title: const Text("Scanned Document"),
+            title: Text(widget.pageTitle),
             centerTitle: false,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
-                widget.onResumeScanning();
+                if (widget.onResumeScanning != null) {
+                  widget.onResumeScanning!();
+                }
                 Navigator.pop(
                     context); // This will pop back to the ScannerSection
               },
@@ -177,7 +181,7 @@ class _PdfOptionsScreenState extends State<PdfOptionsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   CustomButton(
-                    onPressed: ()=> widget.onChangeLocationAndSave(
+                    onPressed: () => widget.onChangeLocationAndSave(
                         widget.fileNameController.text),
                     iconData: Icons.location_on_outlined,
                     label: "change document location",

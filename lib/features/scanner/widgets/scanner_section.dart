@@ -61,6 +61,7 @@ class _ScannerSectionState extends State<ScannerSection> {
       context,
       MaterialPageRoute(
         builder: (_) => PdfOptionsScreen(
+          pageTitle: "Scanned Document",
           pdfFilePath: output.path,
           scannedImagesPaths: scannedImagesPaths,
           fileNameController: fileNameController,

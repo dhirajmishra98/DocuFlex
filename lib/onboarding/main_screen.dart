@@ -16,7 +16,7 @@ import 'package:remixicon/remixicon.dart';
 
 class MainScreen extends StatefulWidget {
   static const String routeName = "/main-screen";
-  const MainScreen({super.key});
+  const  MainScreen({super.key});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
