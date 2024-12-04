@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:docuflex/features/organize/widgets/rotate_pdf_bottomsheet.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
@@ -147,11 +148,7 @@ class _OrganizeSectionState extends State<OrganizeSection> {
                   isScrollControlled: true,
                   context: context,
                   builder: (context) => MergePdfBottomSheet(
-                    title: "Merge Pdfs",
-                    allowedExtensions: const ['pdf'],
-                    invalidFormatWarningMessage: "Please select only PDFs",
-                    buttonLabel: "Merge",
-                    buttonIcon: Icons.merge,
+                    title: "Merge PDFs",
                     callback: (mergedPath) {
                       setState(() {
                         operatedPdfPath = mergedPath;
@@ -181,7 +178,20 @@ class _OrganizeSectionState extends State<OrganizeSection> {
               CustomCard(
                 tileText: "Rotate PDF",
                 iconPath: "assets/icons/rotate.png",
-                onTap: () {},
+                onTap: () => showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (context) => RotatePdfBottomsheet(
+                    title: "Rotate a PDF page",
+                    onRotateComplete: (onRotateComplete) {
+                      setState(() {
+                        operatedPdfPath = onRotateComplete;
+                      });
+                      navigateToPdfOptionScreen(
+                          onRotateComplete, "Rotated PDF");
+                    },
+                  ),
+                ),
               ),
               CustomCard(
                 tileText: "Delete PDF Pages",

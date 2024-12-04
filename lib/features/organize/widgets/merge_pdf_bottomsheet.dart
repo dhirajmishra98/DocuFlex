@@ -5,29 +5,22 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:docuflex/widgets/custom_button.dart';
+import 'package:docuflex/widgets/uploading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:gap/gap.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as path;
 import 'package:pdf_manipulator/pdf_manipulator.dart';
+
+import '../../../utils/utils.dart';
 
 class MergePdfBottomSheet extends StatefulWidget {
   final String title;
-  final List<String>? allowedExtensions;
-  final String invalidFormatWarningMessage;
-  final String buttonLabel;
-  final IconData buttonIcon;
   final Function(String) callback;
 
   const MergePdfBottomSheet({
     super.key,
     required this.title,
-    this.allowedExtensions,
-    required this.invalidFormatWarningMessage,
-    this.buttonLabel = "Convert",
-    this.buttonIcon = Icons.loop,
     required this.callback,
   });
 
@@ -37,14 +30,19 @@ class MergePdfBottomSheet extends StatefulWidget {
 
 class _MergePdfBottomSheetState extends State<MergePdfBottomSheet> {
   List<File> selectedFiles = [];
+  bool _isUploading = false;
 
   Future<void> _pickFiles() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: widget.allowedExtensions,
+      allowedExtensions: ["pdf"],
       allowMultiple: true,
       withData: true,
     );
+
+    setState(() {
+      _isUploading = true;
+    });
 
     if (result != null) {
       final invalidFiles = <String>[];
@@ -54,7 +52,7 @@ class _MergePdfBottomSheetState extends State<MergePdfBottomSheet> {
           final filePath = file.path!;
           final extension = filePath.split('.').last.toLowerCase();
 
-          if (widget.allowedExtensions!.contains(extension)) {
+          if (extension == "pdf") {
             selectedFiles.add(File(filePath));
             selectedFiles.sort((a, b) => a.path
                 .split('/')
@@ -79,7 +77,9 @@ class _MergePdfBottomSheetState extends State<MergePdfBottomSheet> {
         ).show();
       }
 
-      setState(() {});
+      setState(() {
+        _isUploading = false;
+      });
     }
   }
 
@@ -89,17 +89,7 @@ class _MergePdfBottomSheetState extends State<MergePdfBottomSheet> {
     );
 
     if (mergedPdfPath != null) {
-      final output = await getTemporaryDirectory();
-      final mergedFile = File(mergedPdfPath);
-
-      // Define the new file name
-      final newFilePath = path.join(output.path, "merged.pdf");
-
-      // Rename the file
-      final renamedFile = await mergedFile.rename(newFilePath);
-
-      // Update the mergedPdfPath to the renamed file
-      return renamedFile.path;
+      return await getCustomDocumentName(mergedPdfPath, "merged.pdf");
     }
     return null;
   }
@@ -141,69 +131,73 @@ class _MergePdfBottomSheetState extends State<MergePdfBottomSheet> {
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                     )
-                  : ReorderableListView(
-                      onReorder: (oldIndex, newIndex) {
-                        setState(() {
-                          // Adjust the newIndex when dragging an item downward
-                          if (newIndex > oldIndex) {
-                            newIndex -= 1;
-                          }
+                  : _isUploading
+                      ? const UploadingIndicator()
+                      : ReorderableListView(
+                          onReorder: (oldIndex, newIndex) {
+                            setState(() {
+                              // Adjust the newIndex when dragging an item downward
+                              if (newIndex > oldIndex) {
+                                newIndex -= 1;
+                              }
 
-                          final file = selectedFiles.removeAt(oldIndex);
-                          selectedFiles.insert(newIndex, file);
-                        });
-                      },
-                      children: [
-                        for (int index = 0;
-                            index < selectedFiles.length;
-                            index++)
-                          Card(
-                            key: ValueKey(selectedFiles[index].path),
-                            margin: const EdgeInsets.symmetric(vertical: 3),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                            child: ListTile(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                              ),
-                              titleAlignment: ListTileTitleAlignment.center,
-                              dense: false,
-                              tileColor: Colors.deepPurple.shade100,
-                              contentPadding: EdgeInsets.zero,
-                              leading: SizedBox(
-                                width: 80,
-                                height: 80,
-                                child: PDFView(
-                                  filePath: selectedFiles[index].path,
-                                  enableSwipe: false,
-                                  onViewCreated: (controller) async {
-                                    await controller.setPage(0); // Thumbnail
-                                  },
+                              final file = selectedFiles.removeAt(oldIndex);
+                              selectedFiles.insert(newIndex, file);
+                            });
+                          },
+                          children: [
+                            for (int index = 0;
+                                index < selectedFiles.length;
+                                index++)
+                              Card(
+                                key: ValueKey(selectedFiles[index].path),
+                                margin: const EdgeInsets.symmetric(vertical: 3),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
                                 ),
-                              ),
-                              title: AutoSizeText(
-                                selectedFiles[index].path.split('/').last,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
+                                child: ListTile(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  titleAlignment: ListTileTitleAlignment.center,
+                                  dense: false,
+                                  tileColor: Colors.deepPurple.shade100,
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: SizedBox(
+                                    width: 80,
+                                    height: 80,
+                                    child: PDFView(
+                                      filePath: selectedFiles[index].path,
+                                      enableSwipe: false,
+                                      onViewCreated: (controller) async {
+                                        await controller
+                                            .setPage(0); // Thumbnail
+                                      },
+                                    ),
+                                  ),
+                                  title: AutoSizeText(
+                                    selectedFiles[index].path.split('/').last,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  trailing: IconButton(
+                                    icon: const Icon(
+                                        Icons.remove_circle_outlined),
+                                    color: Colors.deepPurple.shade600,
+                                    onPressed: () {
+                                      setState(() {
+                                        selectedFiles.removeAt(index);
+                                      });
+                                    },
+                                  ),
                                 ),
-                              ),
-                              trailing: IconButton(
-                                icon: const Icon(Icons.remove_circle_outlined),
-                                color: Colors.deepPurple.shade600,
-                                onPressed: () {
-                                  setState(() {
-                                    selectedFiles.removeAt(index);
-                                  });
-                                },
-                              ),
-                            ),
-                          )
-                      ],
-                    ),
+                              )
+                          ],
+                        ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -216,8 +210,8 @@ class _MergePdfBottomSheetState extends State<MergePdfBottomSheet> {
                 ),
                 const SizedBox(height: 10),
                 CustomButton(
-                  iconData: widget.buttonIcon,
-                  label: widget.buttonLabel,
+                  iconData: Icons.merge,
+                  label: "Convert",
                   isActiveButton: selectedFiles.isEmpty ? false : true,
                   onPressed: selectedFiles.isEmpty
                       ? null

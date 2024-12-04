@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 void showSnackbar(BuildContext context, String message, Color color) {
   final SnackBar snackbar = SnackBar(
@@ -37,7 +41,7 @@ String getFileNameWithExtension(String name) {
 
 bool validatePageCount(String value, int totalPageCount) {
   final int? count = int.tryParse(value);
-  return count != null && count > 0 && count < totalPageCount;
+  return count != null && count > 0 && count <= totalPageCount;
 }
 
 bool validateByteSize(String value) {
@@ -48,7 +52,7 @@ bool validateByteSize(String value) {
 bool validatePageNumbers(String value, int totalPageCount) {
   final List<String> numbers = value.split(',');
   final Set<int> pageNumbers = {};
-  
+
   for (var number in numbers) {
     final int? parsedNumber = int.tryParse(number.trim());
     if (parsedNumber == null ||
@@ -61,3 +65,17 @@ bool validatePageNumbers(String value, int totalPageCount) {
   return true;
 }
 
+Future<String> getCustomDocumentName(
+    String filePath, String prefferedName) async {
+  final output = await getTemporaryDirectory();
+  final mergedFile = File(filePath);
+
+  // Define the new file name
+  final newFilePath = path.join(output.path, prefferedName);
+
+  // Rename the file
+  final renamedFile = await mergedFile.rename(newFilePath);
+
+  // Update the mergedPdfPath to the renamed file
+  return renamedFile.path;
+}

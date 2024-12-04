@@ -6,14 +6,13 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import '../../../utils/pdf_utils.dart';
 import '../../../widgets/custom_button.dart';
+import '../../../widgets/uploading_indicator.dart';
 import '../../../widgets/utils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:gap/gap.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf_manipulator/pdf_manipulator.dart';
-import 'package:path/path.dart' as path;
 
 import '../../../utils/utils.dart';
 
@@ -39,6 +38,7 @@ class _SplitPdfBottomSheetState extends State<SplitPdfBottomSheet> {
   bool isPageCountValid = true;
   bool isByteSizeValid = true;
   bool arePageNumbersValid = true;
+  bool isUploading = false;
 
   int? totalPageCount;
   int? totalPdfSize;
@@ -54,10 +54,17 @@ class _SplitPdfBottomSheetState extends State<SplitPdfBottomSheet> {
       withData: true,
     );
 
+    setState(() {
+      isUploading = true;
+    });
+
     selectedFilePath = result?.files.first.path;
     totalPageCount = await getPdfPageCount(selectedFilePath!);
     totalPdfSize = File(selectedFilePath!).lengthSync();
-    setState(() {});
+
+    setState(() {
+      isUploading = false;
+    });
   }
 
   Future<void> _splitPdf() async {
@@ -91,17 +98,8 @@ class _SplitPdfBottomSheetState extends State<SplitPdfBottomSheet> {
 
       if (splitPdfPaths != null) {
         for (int i = 0; i < splitPdfPaths!.length; i++) {
-          final output = await getTemporaryDirectory();
-          final mergedFile = File(splitPdfPaths![i]);
-
-          // Define the new file name
-          final newFilePath = path.join(output.path, "split_${i + 1}.pdf");
-
-          // Rename the file
-          final renamedFile = await mergedFile.rename(newFilePath);
-
-          // Update the mergedPdfPath to the renamed file
-          splitPdfPaths![i] = renamedFile.path;
+          splitPdfPaths![i] = await getCustomDocumentName(
+              splitPdfPaths![i], "split_${i + 1}.pdf");
         }
 
         setState(() {});
@@ -295,44 +293,47 @@ class _SplitPdfBottomSheetState extends State<SplitPdfBottomSheet> {
                               style: TextStyle(color: Colors.grey[600]),
                             ),
                           )
-                        : ListTile(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                            titleAlignment: ListTileTitleAlignment.center,
-                            dense: false,
-                            tileColor: Colors.deepPurple.shade100,
-                            contentPadding: EdgeInsets.zero,
-                            leading: SizedBox(
-                              width: 80,
-                              height: 80,
-                              child: PDFView(
-                                filePath: selectedFilePath,
-                                enableSwipe: false,
-                                onViewCreated: (controller) async {
-                                  await controller.setPage(0); // Thumbnail
-                                },
+                        : isUploading
+                            ? const UploadingIndicator()
+                            : ListTile(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ),
+                                titleAlignment: ListTileTitleAlignment.center,
+                                dense: false,
+                                tileColor: Colors.deepPurple.shade100,
+                                contentPadding: EdgeInsets.zero,
+                                leading: SizedBox(
+                                  width: 80,
+                                  height: 80,
+                                  child: PDFView(
+                                    filePath: selectedFilePath,
+                                    enableSwipe: false,
+                                    onViewCreated: (controller) async {
+                                      await controller.setPage(0); // Thumbnail
+                                    },
+                                  ),
+                                ),
+                                title: AutoSizeText(
+                                  selectedFilePath!.split('/').last,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                trailing: IconButton(
+                                  icon:
+                                      const Icon(Icons.remove_circle_outlined),
+                                  color: Colors.deepPurple.shade600,
+                                  onPressed: () {
+                                    setState(() {
+                                      selectedFilePath = null;
+                                    });
+                                  },
+                                ),
                               ),
-                            ),
-                            title: AutoSizeText(
-                              selectedFilePath!.split('/').last,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15,
-                              ),
-                            ),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.remove_circle_outlined),
-                              color: Colors.deepPurple.shade600,
-                              onPressed: () {
-                                setState(() {
-                                  selectedFilePath = null;
-                                });
-                              },
-                            ),
-                          ),
                   )
                 : selectedFilePath == null
                     ? Center(

@@ -62,6 +62,7 @@ dependencies:
   connectivity_plus: ^6.1.0
   webview_flutter: ^4.8.0
   path: ^1.9.0
+  flutter_spinkit: ^5.2.1
 
 
 dev_dependencies:
