@@ -57,7 +57,7 @@ dependencies:
   docx_to_text: ^1.0.1
   syncfusion_flutter_pdf: ^27.2.2
   syncfusion_flutter_pdfviewer: ^27.2.2
-  pdf_manipulator: ^0.5.9
+  pdf_manipulator: ^0.5.9 #this package has most useful features used by this app
   url_launcher: ^6.3.1
   connectivity_plus: ^6.1.0
   webview_flutter: ^4.8.0
