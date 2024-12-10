@@ -1,6 +1,9 @@
 # 📄 DocuFlex
 
 **DocuFlex** is a powerful and versatile document management app designed to make document handling seamless and efficient. Whether you're scanning, merging, splitting, or rotating PDFs, DocuFlex has you covered. Future versions aim to include features like document format conversions, organizing documents, securing files, and much more.
+<br>
+
+📱 Future Goals to lauch app on playstore while the code remains open source.
 
 ---
 
